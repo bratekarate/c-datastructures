@@ -1,6 +1,6 @@
 CC=tcc
-CFLAGS=-I.
-CLIBS=
+CFLAGS=-I. -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+CLIBS=-lglib-2.0
 NAME=data_structures
 SRCDIR=src
 TESTDIR=test
