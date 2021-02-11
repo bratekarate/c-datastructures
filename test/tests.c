@@ -9,7 +9,7 @@
 
 void test_1();
 void print(void *i);
-void free_func(int *i);
+void free_func(void *i);
 char *find(ArrayList *list, char *ele);
 int no_digits(size_t nu);
 
@@ -32,7 +32,7 @@ void test_1() {
   ArrayList *l = new_arraylist(sizeof(size_t));
   // GList *gl = NULL;
 
-  for (size_t i = 0; i < 999; i++) {
+  for (size_t i = 0; i < 9999; i++) {
     // printf("adding ele\n");
     int size = no_digits(i) + 1;
     // printf("%lu\t%d\n", i, n_digits);
@@ -50,6 +50,10 @@ void test_1() {
 
   arraylist_free_all(l);
   // g_list_free_full(gl, free_func);
+}
+
+void free_func(void *ele) {
+    free(ele);
 }
 
 char *find(ArrayList *list, char *ele) {
