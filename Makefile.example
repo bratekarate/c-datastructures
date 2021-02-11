@@ -1,0 +1,34 @@
+CC=tcc
+CFLAGS=-I. -I./include/dastruct
+FLAGS=-pedantic -Wall -Wextra
+CLIBS=-L./lib/dastruct -ldastruct
+NAME=testing
+SRCDIR=src
+# TESTDIR=test
+# DEPS=$(SRCDIR)/arraylist.h
+OUTDIR=out
+# OBJ_LIB=test.o
+OBJ_MAIN=$(addprefix $(OUTDIR)/, $(OBJ_LIB) main.o)
+# OBJ_TEST=$(addprefix $(OUTDIR)/, $(OBJ_LIB) tests.o)
+
+$(OUTDIR)/%.o: $(SRCDIR)/%.c $(DEPS)
+	@[ -d "$(@D)" ] || mkdir -p "$(@D)"
+	$(CC) $(CFLAGS) $(FLAGS) -c -o $@ $<
+
+main: $(OUTDIR)/$(NAME)
+$(OUTDIR)/$(NAME): $(OBJ_MAIN)
+	$(CC) $(FLAGS) $(CFLAGS) -o $@ $^ $(CLIBS)
+
+watch:
+	@command -v inotifywait > /dev/null || \
+		{ \
+			echo "Please install inotifywait"; exit 2; \
+		}
+	@while true ; do \
+		NAME=$$(inotifywait \
+			-e create,modify \
+			--include '.*\.(c|h)' \
+			--format '%w%f' \
+			"$(SRCDIR)"); \
+		($(MAKE)); \
+	done
