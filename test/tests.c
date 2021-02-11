@@ -1,7 +1,7 @@
 #include "../src/arraylist.h"
-#include <stdlib.h>
-#include <limits.h>
 #include <glib.h>
+#include <limits.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define FUNC_DEF(func) {func, #func},
@@ -11,14 +11,14 @@ void test_1();
 void print(void *i);
 void free_func(int *i);
 char *find(ArrayList *list, char *ele);
+int no_digits(size_t nu);
 
 typedef struct {
   void (*func)(void);
   const char *name;
 } func_pointer_t;
 
-func_pointer_t func_array[] = {
-    FUNC_DEF(test_1)};
+func_pointer_t func_array[] = {FUNC_DEF(test_1)};
 
 int main() {
   for (size_t i = 0; i < FUNC_ARRAY_SIZE; i++) {
@@ -29,40 +29,46 @@ int main() {
 }
 
 void test_1() {
-    ArrayList *l = new_arraylist(sizeof(size_t));
-    // GList *gl = NULL;
+  ArrayList *l = new_arraylist(sizeof(size_t));
+  // GList *gl = NULL;
 
-    for(size_t i = 0; i < 999; i++) {
-        // printf("adding ele\n");
-        char *elem = malloc(30 * sizeof(char));
-        snprintf(elem, 30, "%lu", i);
-        // gl = g_list_append(gl, elem);
-        arraylist_add(l, elem);
-    }
+  for (size_t i = 0; i < 999; i++) {
+    // printf("adding ele\n");
+    int size = no_digits(i) + 1;
+    // printf("%lu\t%d\n", i, n_digits);
+    char *elem = malloc(size * sizeof(char));
+    snprintf(elem, size, "%lu", i);
+    // gl = g_list_append(gl, elem);
+    arraylist_add(l, elem);
+  }
 
-    find(l, "Tsting");
+  for_each(l, print);
+  // g_list_foreach(gl, print, NULL);
 
-    for_each(l, print);
-    // g_list_foreach(gl, print, NULL);
+  // printf("%s\n", (char *)arraylist_get(l, 0));
+  // printf("%s\n", find(l, "187"));
 
-    printf("%s\n", (char*) arraylist_get(l, 0));
-    printf("%s\n", find(l, "187"));
-
-    arraylist_free_all(l);
-    // g_list_free_full(gl, free_func);
+  arraylist_free_all(l);
+  // g_list_free_full(gl, free_func);
 }
 
 char *find(ArrayList *list, char *ele) {
-    char *next = arraylist_first(list);
-    do{
-        if(!strcmp(next, ele)) {
-            return next;
-        }
-    } while((next = arraylist_next(list)) != NULL);
+  char *next = arraylist_first(list);
+  do {
+    if (!strcmp(next, ele)) {
+      return next;
+    }
+  } while ((next = arraylist_next(list)) != NULL);
 
-    return NULL;
+  return NULL;
 }
 
-void print(void *i) {
-    printf("%s\n", (char*)i);
+void print(void *i) { printf("%s\n", (char *)i); }
+
+int no_digits(size_t nu) {
+  int c;
+  for (c = 0; nu != 0; c++) {
+    nu /= 10;
+  }
+  return c;
 }
