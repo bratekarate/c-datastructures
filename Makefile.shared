@@ -1,0 +1,19 @@
+CC=tcc
+CFLAGS=-I. -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+FLAGS=-pedantic -Wall -Wextra
+CLIBS=-lglib-2.0
+NAME=libdastruct.so
+SRCDIR=src
+DEPS=$(SRCDIR)/arraylist.h
+OUTDIR=out
+OBJ_LIB=arraylist.o
+OBJ_MAIN=$(addprefix $(OUTDIR)/, arraylist.o)
+
+$(OUTDIR)/%.o: $(SRCDIR)/%.c $(DEPS)
+	@[ -d "$(@D)" ] || mkdir -p "$(@D)"
+	$(CC) -c -fPIC $(FLAGS) $(CFLAGS) -o $@ $<
+
+main: $(OUTDIR)/$(NAME)
+
+$(OUTDIR)/$(NAME): $(OBJ_MAIN)
+	$(CC) -shared -o $@ $^ $(CLIBS)

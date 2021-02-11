@@ -1,10 +1,11 @@
 CC=tcc
 CFLAGS=-I. -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+FLAGS=-pedantic -Wall -Wextra
 CLIBS=-lglib-2.0
 NAME=data_structures
 SRCDIR=src
 TESTDIR=test
-DEPS=$(SRCDIR)/arraylist.h
+DEPS=$(SRCDIR)/dastruct.h
 OUTDIR=out
 OBJ_LIB=arraylist.o
 OBJ_MAIN=$(addprefix $(OUTDIR)/, $(OBJ_LIB) main.o)
@@ -12,11 +13,11 @@ OBJ_TEST=$(addprefix $(OUTDIR)/, $(OBJ_LIB) tests.o)
 
 $(OUTDIR)/%.o: $(SRCDIR)/%.c $(DEPS)
 	@[ -d "$(@D)" ] || mkdir -p "$(@D)"
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) $(FLAGS) -c -o $@ $<
 
 main: $(OUTDIR)/$(NAME)
 $(OUTDIR)/$(NAME): $(OBJ_MAIN)
-	$(CC) $(CFLAGS) -o $@ $^ $(CLIBS)
+	$(CC) $(FLAGS) $(CFLAGS) -o $@ $^ $(CLIBS)
 
 $(OUTDIR)/%.o: $(TESTDIR)/%.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
