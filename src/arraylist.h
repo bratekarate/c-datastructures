@@ -1,7 +1,6 @@
-#include <stdio.h>
+#include <stddef.h>
 
 typedef struct ArrayList ArrayList;
-
 ArrayList *new_arraylist(size_t elem_size);
 void arraylist_free(ArrayList *list);
 void arraylist_free_all(ArrayList *list);

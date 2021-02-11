@@ -1,8 +1,9 @@
 #include "../src/arraylist.h"
-#include <glib.h>
-#include <limits.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+#include <glib.h>
 
 #define FUNC_DEF(func) {func, #func},
 #define FUNC_ARRAY_SIZE (sizeof(func_array) / sizeof(func_pointer_t))
