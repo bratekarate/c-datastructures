@@ -6,7 +6,7 @@ NAME=libdastruct
 SRCDIR=src
 DEPS=$(SRCDIR)/arraylist.h
 OUTDIR=out
-OBJ_LIB=arraylist.o
+# OBJ_LIB=arraylist.o
 OBJ_MAIN=$(addprefix $(OUTDIR)/, arraylist.o)
 
 $(OUTDIR)/%.o: $(SRCDIR)/%.c $(DEPS)
