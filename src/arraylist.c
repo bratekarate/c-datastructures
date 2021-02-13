@@ -13,9 +13,11 @@ void *arraylist_get(ArrayList *list, size_t i);
 void *arraylist_get_last(ArrayList *list);
 void *arraylist_remove(ArrayList *list, size_t i);
 void *arraylist_remove_last(ArrayList *list);
-char *arraylist_it_first(ArrayList *list);
-char *arraylist_it_next(ArrayList *list);
+void *arraylist_it_first(ArrayList *list);
+void *arraylist_it_next(ArrayList *list);
 void for_each(ArrayList *list, void (*callback)(void *item));
+ArrayList *arraylist_reverse(ArrayList *list);
+void arraylist_print(ArrayList *list, void printfn(void*));
 void arraylist_free_all(ArrayList *list);
 void arraylist_free(ArrayList *list);
 
@@ -86,7 +88,7 @@ void *arraylist_remove_last(ArrayList *list) {
   return arraylist_remove(list, list->size - 1);
 }
 
-char *arraylist_it_first(ArrayList *list) {
+void *arraylist_it_first(ArrayList *list) {
   if (list->size == 0) {
     return NULL;
   }
@@ -95,7 +97,7 @@ char *arraylist_it_first(ArrayList *list) {
   return list->arr[list->cur];
 }
 
-char *arraylist_it_next(ArrayList *list) {
+void *arraylist_it_next(ArrayList *list) {
   if (list->cur + 1 >= list->size) {
     return NULL;
   }
@@ -107,6 +109,26 @@ void for_each(ArrayList *list, void (*callback)(void *item)) {
   for (size_t i = 0; i < list->size; i++) {
     callback(list->arr[i]);
   }
+}
+
+ArrayList *arraylist_reverse(ArrayList *list) {
+  int l, r;
+  for (l = 0, r = list->size - 1; l < r; l++, r--) {
+    void *tmp = list->arr[l];
+    list->arr[l] = list->arr[r];
+    list->arr[r] = tmp;
+  }
+}
+
+void arraylist_print(ArrayList *list, void printfn(void*)) {
+  printf("[ ");
+  void *next = arraylist_it_first(list);
+  do {
+    printfn(next);    
+    printf(", ");
+  } while((next = arraylist_it_next(list)) != NULL);
+
+  printf("]\n");
 }
 
 void arraylist_free_all(ArrayList *list) {

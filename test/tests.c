@@ -33,7 +33,7 @@ void test_1() {
   ArrayList *l = new_arraylist();
   // GList *gl = NULL;
 
-  for (size_t i = 0; i < 10; i++) {
+  for (size_t i = 0; i < 9; i++) {
     // printf("adding ele\n");
     int size = no_digits(i) + 1;
     // printf("%lu\t%d\n", i, n_digits);
@@ -50,13 +50,17 @@ void test_1() {
   arraylist_insert(l, 2, testm);
 
   char *removed = (char*) arraylist_remove(l, 1);
-  char *last = (char*) arraylist_remove_last(l);
-
-  for_each(l, print);
-  // g_list_foreach(gl, print, NULL);
-  
   printf("removed: %s\n", removed);
+  char *last = (char*) arraylist_remove_last(l);
   printf("removed last: %s\n", last);
+
+  arraylist_print(l, print);
+  // g_list_foreach(gl, print, NULL);
+
+  arraylist_reverse(l);
+
+  arraylist_print(l, print);
+  
   printf("cur lst: %s\n", (char*) arraylist_get_last(l));
   printf("cur fst: %s\n", (char *)arraylist_get(l, 0));
   printf("find elem: %s\n", find(l, "test"));
@@ -85,7 +89,7 @@ char *find(ArrayList *list, char *ele) {
   return NULL;
 }
 
-void print(void *i) { printf("%s\n", (char *)i); }
+void print(void *i) { printf("%s", (char *)i); }
 
 int no_digits(size_t nu) {
   if (nu == 0) {
