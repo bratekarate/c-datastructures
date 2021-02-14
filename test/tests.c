@@ -1,4 +1,4 @@
-#include "../src/arraylist.h"
+#include "../src/dastruct.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +9,7 @@
 #define FUNC_ARRAY_SIZE (sizeof(func_array) / sizeof(func_pointer_t))
 
 void test_1();
+void test_linked_list();
 void print(void *i);
 void free_func(void *i);
 char *find(ArrayList *list, char *ele);
@@ -19,7 +20,10 @@ typedef struct {
   const char *name;
 } func_pointer_t;
 
-func_pointer_t func_array[] = {FUNC_DEF(test_1)};
+func_pointer_t func_array[] = {
+    FUNC_DEF(test_1)
+    FUNC_DEF(test_linked_list)
+};
 
 int main() {
   for (size_t i = 0; i < FUNC_ARRAY_SIZE; i++) {
@@ -30,7 +34,7 @@ int main() {
 }
 
 void test_1() {
-  ArrayList *l = new_arraylist();
+  ArrayList *l = arraylist_new();
   // GList *gl = NULL;
 
   for (size_t i = 0; i < 9; i++) {
@@ -72,6 +76,46 @@ void test_1() {
   testm = NULL;
   removed = NULL;
   last = NULL;
+}
+
+void test_linked_list() {
+  LinkedList *list = linkedlist_new();
+
+  for(size_t i = 0; i < 15; i++) {
+    int size = no_digits(i) + 1;
+    // printf("%lu\t%d\n", i, n_digits);
+    char *elem = malloc(size * sizeof(char));
+    snprintf(elem, size, "%lu", i);
+    // gl = g_list_append(gl, elem);
+    linkedlist_add(list, elem);
+  }
+
+  linkedlist_print(list, print);
+
+  LinkedList *list2 = linkedlist_new();
+
+  for(size_t i = 500; i < 500 + linkedlist_size(list); i++) {
+    int size = no_digits(i) + 1;
+    // printf("%lu\t%d\n", i, n_digits);
+    char *elem = malloc(size * sizeof(char));
+    snprintf(elem, size, "%lu", i);
+    linkedlist_add(list2, elem);
+  }
+
+  linkedlist_print(list2, print);
+
+  linkedlist_add_all(list, list2);
+
+  linkedlist_print(list, print);
+  printf("list[%d] = %d\nremove %d.\n", 1, 1, *(int*)linkedlist_remove(list, 1));
+  linkedlist_print(list, print);
+  printf("list[%d] = %d\n", 1, *(int*)linkedlist_get(list, 1));
+  printf("list[0] = %d\nremove 0.\n", *(int*)linkedlist_remove(list, 0));
+  linkedlist_print(list, print);
+  printf("list[0] = %d\n", *(int*)linkedlist_get(list, 0));
+
+  linkedlist_free(list);
+  list = NULL;
 }
 
 void free_func(void *ele) {

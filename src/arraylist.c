@@ -6,7 +6,7 @@
 #define INITIAL_CAP (10)
 #define POINTER_SIZE (sizeof(void *))
 
-ArrayList *new_arraylist();
+ArrayList *arraylist_new();
 void arraylist_add(ArrayList *list, void *elem);
 void arraylist_insert(ArrayList *list, size_t i, void *elem);
 void *arraylist_get(ArrayList *list, size_t i);
@@ -15,9 +15,9 @@ void *arraylist_remove(ArrayList *list, size_t i);
 void *arraylist_remove_last(ArrayList *list);
 void *arraylist_it_first(ArrayList *list);
 void *arraylist_it_next(ArrayList *list);
-void for_each(ArrayList *list, void (*callback)(void *item));
+void arraylist_foreach(ArrayList *list, void (*callback)(void *item));
 ArrayList *arraylist_reverse(ArrayList *list);
-void arraylist_print(ArrayList *list, void printfn(void*));
+void arraylist_print(ArrayList *list, void (*printfn)(void*));
 void arraylist_free_all(ArrayList *list);
 void arraylist_free(ArrayList *list);
 
@@ -32,7 +32,7 @@ typedef struct ArrayList {
   size_t cur;
 } ArrayList;
 
-ArrayList *new_arraylist() {
+ArrayList *arraylist_new() {
   ArrayList *list = malloc(sizeof(ArrayList));
   *list = ((ArrayList){.size = 0, .cap = INITIAL_CAP, .cur = 0});
   list->arr = malloc(POINTER_SIZE * INITIAL_CAP);
@@ -105,7 +105,7 @@ void *arraylist_it_next(ArrayList *list) {
   return list->arr[++list->cur];
 }
 
-void for_each(ArrayList *list, void (*callback)(void *item)) {
+void arraylist_foreach(ArrayList *list, void (*callback)(void *item)) {
   for (size_t i = 0; i < list->size; i++) {
     callback(list->arr[i]);
   }
@@ -120,7 +120,7 @@ ArrayList *arraylist_reverse(ArrayList *list) {
   }
 }
 
-void arraylist_print(ArrayList *list, void printfn(void*)) {
+void arraylist_print(ArrayList *list, void (*printfn)(void*)) {
   printf("[ ");
   void *next = arraylist_it_first(list);
   do {
@@ -132,7 +132,7 @@ void arraylist_print(ArrayList *list, void printfn(void*)) {
 }
 
 void arraylist_free_all(ArrayList *list) {
-  for_each(list, _arraylist_free_func);
+  arraylist_foreach(list, _arraylist_free_func);
   arraylist_free(list);
 }
 
