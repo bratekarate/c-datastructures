@@ -47,6 +47,23 @@ void test_1() {
     arraylist_add(l, elem);
   }
 
+  ArrayList *l2 = arraylist_new();
+  for(size_t i = 500; i < 500 + arraylist_size(l); i++) {
+    // printf("adding ele\n");
+    int size = no_digits(i) + 1;
+    // printf("%lu\t%d\n", i, n_digits);
+    char *elem = malloc(size * sizeof(char));
+    snprintf(elem, size, "%lu", i);
+    // gl = g_list_append(gl, elem);
+    printf("%s\n", elem);
+    arraylist_add(l2, elem);
+  }
+  //
+  // arraylist_print(l2, print);
+  // TODO: causes memory issues later on?
+  arraylist_add_all(l, l2);
+
+  arraylist_free(l2);
 
   char *test = "test";
   char *testm = malloc((strlen(test) - 1) * sizeof(char));

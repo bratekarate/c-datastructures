@@ -8,6 +8,7 @@
 
 ArrayList *arraylist_new();
 void arraylist_add(ArrayList *list, void *elem);
+void arraylist_add_all(ArrayList *list, ArrayList *addable);
 void arraylist_insert(ArrayList *list, size_t i, void *elem);
 void *arraylist_get(ArrayList *list, size_t i);
 void *arraylist_get_last(ArrayList *list);
@@ -15,6 +16,7 @@ void *arraylist_remove(ArrayList *list, size_t i);
 void *arraylist_remove_last(ArrayList *list);
 void *arraylist_it_first(ArrayList *list);
 void *arraylist_it_next(ArrayList *list);
+size_t arraylist_size(ArrayList *list);
 void arraylist_foreach(ArrayList *list, void (*callback)(void *item));
 ArrayList *arraylist_reverse(ArrayList *list);
 void arraylist_print(ArrayList *list, void (*printfn)(void*));
@@ -41,6 +43,13 @@ ArrayList *arraylist_new() {
 
 void arraylist_add(ArrayList *list, void *elem) {
   arraylist_insert(list, list->size, elem);
+}
+
+void arraylist_add_all(ArrayList *list, ArrayList *addable) {
+  void *next = arraylist_it_first(addable);
+  do {
+      arraylist_add(list, next);
+  } while((next = arraylist_it_next(addable)) != NULL);
 }
 
 void arraylist_insert(ArrayList *list, size_t index, void *elem) {
@@ -103,6 +112,10 @@ void *arraylist_it_next(ArrayList *list) {
   }
 
   return list->arr[++list->cur];
+}
+
+size_t arraylist_size(ArrayList *list) {
+    return list->size;
 }
 
 void arraylist_foreach(ArrayList *list, void (*callback)(void *item)) {
