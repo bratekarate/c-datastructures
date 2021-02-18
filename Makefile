@@ -1,6 +1,6 @@
-CC=tcc
+CC=gcc
 CFLAGS=-I. -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
-FLAGS=-pedantic -Wall -Wextra
+FLAGS=-g -pedantic -Wall -Wextra
 CLIBS=-lglib-2.0
 NAME=data_structures
 SRCDIR=src
@@ -20,11 +20,11 @@ $(OUTDIR)/$(NAME): $(OBJ_MAIN)
 	$(CC) $(FLAGS) $(CFLAGS) -o $@ $^ $(CLIBS)
 
 $(OUTDIR)/%.o: $(TESTDIR)/%.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) $(FLAGS) -c -o $@ $<
 
 test: $(OUTDIR)/$(NAME)_tests
 $(OUTDIR)/$(NAME)_tests: $(OBJ_TEST) $(OUTDIR)/tests.o
-	$(CC) $(CFLAGS) -o $@ $^ $(CLIBS)
+	$(CC) $(FLAGS) $(CFLAGS) -o $@ $^ $(CLIBS)
 
 watch:
 	@command -v inotifywait > /dev/null || \
