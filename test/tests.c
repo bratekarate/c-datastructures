@@ -1,9 +1,9 @@
-#include "../src/dastruct.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
-#include <glib.h>
+#include <stdbool.h>
+#include "../src/dastruct.h"
+// TODO: duplice include in .c and .h file best practice?
 
 #define FUNC_DEF(func) {func, #func},
 #define FUNC_ARRAY_SIZE (sizeof(func_array) / sizeof(func_pointer_t))
@@ -11,7 +11,6 @@
 void test_1();
 void test_linked_list();
 void print(void *i);
-void free_func(void *i);
 char *find(ArrayList *list, char *ele);
 int no_digits(size_t nu);
 
@@ -35,35 +34,27 @@ int main() {
 
 void test_1() {
   ArrayList *l = arraylist_new();
-  // GList *gl = NULL;
 
   for (size_t i = 0; i < 9; i++) {
-    // printf("adding ele\n");
     int size = no_digits(i) + 1;
-    // printf("%lu\t%d\n", i, n_digits);
     char *elem = malloc(size * sizeof(char));
     snprintf(elem, size, "%lu", i);
-    // gl = g_list_append(gl, elem);
     arraylist_add(l, elem);
   }
 
   ArrayList *l2 = arraylist_new();
   for(size_t i = 500; i < 500 + arraylist_size(l); i++) {
-    // printf("adding ele\n");
     int size = no_digits(i) + 1;
-    // printf("%lu\t%d\n", i, n_digits);
     char *elem = malloc(size * sizeof(char));
     snprintf(elem, size, "%lu", i);
-    // gl = g_list_append(gl, elem);
     printf("%s\n", elem);
     arraylist_add(l2, elem);
   }
-  //
-  // arraylist_print(l2, print);
+
   // TODO: causes memory issues later on?
   arraylist_add_all(l, l2);
 
-  arraylist_free(l2);
+  arraylist_free(l2, false);
 
   char *test = "test";
   char *testm = malloc((strlen(test) - 1) * sizeof(char));
@@ -76,18 +67,14 @@ void test_1() {
   printf("removed last: %s\n", last);
 
   arraylist_print(l, print);
-  // g_list_foreach(gl, print, NULL);
-
   arraylist_reverse(l);
-
   arraylist_print(l, print);
   
   printf("cur lst: %s\n", (char*) arraylist_get_last(l));
   printf("cur fst: %s\n", (char *)arraylist_get(l, 0));
   printf("find elem: %s\n", find(l, "test"));
 
-  arraylist_free_all(l);
-  // g_list_free_full(gl, free_func);
+  arraylist_free(l, true);
 
   l = NULL;
   testm = NULL;
@@ -100,10 +87,8 @@ void test_linked_list() {
 
   for(size_t i = 0; i < 15; i++) {
     int size = no_digits(i) + 1;
-    // printf("%lu\t%d\n", i, n_digits);
     char *elem = malloc(size * sizeof(char));
-    snprintf(elem, size, "%lu", i);
-    // gl = g_list_append(gl, elem);
+    snprintf(elem, size, "%zu", i);
     linkedlist_add(list, elem);
   }
 
@@ -113,7 +98,7 @@ void test_linked_list() {
 
   for(size_t i = 500; i < 500 + linkedlist_size(list); i++) {
     int size = no_digits(i) + 1;
-    // printf("%lu\t%d\n", i, n_digits);
+    // fprintf(stderr, "%lu\t%d\n", i, n_digits);
     char *elem = malloc(size * sizeof(char));
     snprintf(elem, size, "%lu", i);
     linkedlist_add(list2, elem);
@@ -131,7 +116,7 @@ void test_linked_list() {
   linkedlist_print(list, print);
   printf("list[0] = %d\n", *(int*)linkedlist_get(list, 0));
 
-  linkedlist_free(list);
+  linkedlist_free(list, true);
   list = NULL;
 }
 

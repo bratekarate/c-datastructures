@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct LinkedList LinkedList;
 LinkedList *linkedlist_new();
@@ -21,7 +22,7 @@ void *linkedlist_remove(LinkedList *list, const size_t index);
 size_t linkedlist_size(LinkedList *list);
 //TODO
 // void for_each(LinkedList *list, void (*callback)(void*));
-void linkedlist_print(LinkedList *list, void printfn(void*));
-void linkedlist_free(LinkedList *list);
+void linkedlist_print(LinkedList *list, void (*printfn)(void*));
+void linkedlist_free(LinkedList *list, bool items);
 // TODO
 // void linkedlist_free_all(LinkedList *list);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define NODE_SIZE sizeof(Node)
 #define LINKED_LIST_SIZE sizeof(LinkedList)
@@ -15,16 +16,15 @@ void linkedlist_add_all(LinkedList *list, LinkedList *addable);
 void *linkedlist_get(LinkedList *list, size_t index);
 void *linkedlist_remove(LinkedList *list, size_t index);
 size_t linkedlist_size(LinkedList *list);
-void linkedlist_print(LinkedList *list, void printfn(void*));
-void linkedlist_free(LinkedList *list);
+void linkedlist_free(LinkedList *list, bool items);
 
 // Low level functions
 void init_list(LinkedList **list);
 void init_node_p(Node **node, void *item);
 void add_node(LinkedList *list, Node **node, void *item);
 void print_nodes_rec_broken(Node *node);
-void print_nodes(Node *node, void *printfn(void*));
-void free_nodes(Node *node);
+void linkedlist_print(LinkedList *list, void (*printfn)(void*));
+void free_nodes(Node *node, bool items);
 void free_nodes_rec_broken(Node *node);
 
 typedef struct Node {
@@ -48,7 +48,7 @@ LinkedList *linkedlist_new() {
 
 void linkedlist_add(LinkedList *list, void *item) {
   Node *node = malloc(NODE_SIZE);
-  /*printf("Create node %p\n", node);*/
+  // fprintf(stderr, "Create node %p with item %s\n", node, (char*)item);
   add_node(list, &node, item);
 }
 
@@ -81,12 +81,12 @@ void *linkedlist_remove(LinkedList *list, size_t index){
     Node *prev = cur -> prev;
     Node *next = cur -> next;
     if(prev != NULL) {
-        /*printf("cur -> prev: %d\n", cur -> prev -> item);*/
+        /*fprintf(stderr, "cur -> prev: %d\n", cur -> prev -> item);*/
         prev -> next = next;
     }
 
     if(next != NULL) {
-        /*printf("cur -> next: %d\n", cur -> next -> item);*/
+        /*fprintf(stderr, "cur -> next: %d\n", cur -> next -> item);*/
         next -> prev = prev;
     }
 
@@ -110,39 +110,44 @@ size_t linkedlist_size(LinkedList *list) {
     return list->size;
 }
 
-// TODO: how to set null
-void linkedlist_free(LinkedList *list) {
-    free_nodes(list->lst);
+void printit(void *stuff) {
+  printf("%p\n", stuff);
+}
+
+// TODO: bool property good solution?
+void linkedlist_free(LinkedList *list, bool items) {
+    free_nodes(list->lst, items);
+    list->fst = NULL;
+    list -> size = 0;
     free(list);
 }
 
-// TODO: how to set null
-void free_nodes(Node *node) {
+void free_nodes(Node *node, bool items) {
     while(node != NULL) {
         Node *prev = node->prev;
-        /*printf("Free node %p with item %d\n", node, node -> item);*/
+        /*fprintf(stderr, "Free node %p with item %d\n", node, node -> item);*/
+        if (items) {
+          free(node -> item);
+        }
         free(node);
         node = prev;
     }
 }
 
-void free_nodes_rec_broken(Node *node) {
-  if (node == NULL) {
-    return;
-  }
-  free_nodes_rec_broken(node->next);
-  /*printf("Free node %p\n", node);*/
-  free(node);
-  node = NULL;
-}
+// void free_nodes_rec_broken(Node *node) {
+//   if (node == NULL) {
+//     return;
+//   }
+//   free_nodes_rec_broken(node->next);
+//   /*ffprintf(stderr, "stderr, Free node %p\n", node);*/
+//   free(node);
+//   node = NULL;
+// }
 
-// TODO: make tostring
-void linkedlist_print(LinkedList *list, void printfn(void*)) {
-    print_nodes(list->fst, printfn);
-}
-
-void print_nodes(Node *node, void *printfn(void*)) {
+void linkedlist_print(LinkedList *list, void (*printfn)(void*)) {
+    fprintf(stderr, "size: %zu\n", list -> size);
     printf("[ ");
+    Node *node = list -> fst;
     while (node != NULL) {
         char *rest = node -> next == NULL ? " " : ", ";
         printfn(node->item);
@@ -152,13 +157,13 @@ void print_nodes(Node *node, void *printfn(void*)) {
     printf("]\n");
 }
 
-void print_nodes_rec_broken(Node *node) {
-  if (node == NULL) {
-    return;
-  }
-  printf("%d\n", node->item);
-  print_nodes_rec_broken(node->next);
-}
+// void print_nodes_rec_broken(Node *node) {
+//   if (node == NULL) {
+//     return;
+//   }
+//   printf("%d\n", node->item);
+//   print_nodes_rec_broken(node->next);
+// }
 
 void init_list(LinkedList **list) {
   LinkedList l = {.fst = NULL, .lst = NULL};
@@ -172,6 +177,7 @@ void init_node_p(Node **node, void *item) {
 
 void add_node(LinkedList *list, Node **node, void *item) {
   init_node_p(node, item);
+  // fprintf(stderr, "node -> item: %s\n", (char*)(*node) -> item);
 
   Node *l = list->lst;
 
@@ -179,9 +185,12 @@ void add_node(LinkedList *list, Node **node, void *item) {
 
   if (l == NULL) {
     list->fst = *node;
+    // fprintf(stderr, "add node as first element: %s\n", (char*)list -> fst -> item);
   } else {
     l->next = *node;
     (*node)->prev = l;
+    // fprintf(stderr, "add node as next element of last: %s\n", (char*)l -> next -> item);
+    // fprintf(stderr, "prev element of node is: %s\n", (char*)l -> next -> prev -> item);
   }
   list->size++;
 }

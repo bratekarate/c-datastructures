@@ -1,14 +1,19 @@
-#include "arraylist.h"
-#include <glib.h>
+#include <stdint.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define INITIAL_CAP (10)
 #define POINTER_SIZE (sizeof(void *))
 
+typedef struct ArrayList ArrayList;
+
 ArrayList *arraylist_new();
 void arraylist_add(ArrayList *list, void *elem);
 void arraylist_add_all(ArrayList *list, ArrayList *addable);
+void arraylist_add_i(ArrayList *list, intmax_t val, size_t size);
+void arraylist_add_f(ArrayList *list, double val, size_t size);
 void arraylist_insert(ArrayList *list, size_t i, void *elem);
 void *arraylist_get(ArrayList *list, size_t i);
 void *arraylist_get_last(ArrayList *list);
@@ -20,10 +25,9 @@ size_t arraylist_size(ArrayList *list);
 void arraylist_foreach(ArrayList *list, void (*callback)(void *item));
 ArrayList *arraylist_reverse(ArrayList *list);
 void arraylist_print(ArrayList *list, void (*printfn)(void*));
-void arraylist_free_all(ArrayList *list);
-void arraylist_free(ArrayList *list);
+void arraylist_free(ArrayList *list, bool items);
 
-void _arraylist_free_func(void *ele);
+void _elem_free_func(void *ele);
 void _grow_if_exceeds(ArrayList *list);
 void _shrink_if_small(ArrayList *list);
 
@@ -50,6 +54,18 @@ void arraylist_add_all(ArrayList *list, ArrayList *addable) {
   do {
       arraylist_add(list, next);
   } while((next = arraylist_it_next(addable)) != NULL);
+}
+
+void arraylist_add_i(ArrayList *list, intmax_t val, size_t size) {
+  intmax_t *elem = malloc(size);
+  *elem = val;
+  arraylist_insert(list, list->size, elem);
+}
+
+void arraylist_add_f(ArrayList *list, double val, size_t size) {
+  double *elem = malloc(size);
+  *elem = val;
+  arraylist_insert(list, list->size, elem);
 }
 
 void arraylist_insert(ArrayList *list, size_t index, void *elem) {
@@ -131,6 +147,7 @@ ArrayList *arraylist_reverse(ArrayList *list) {
     list->arr[l] = list->arr[r];
     list->arr[r] = tmp;
   }
+  return list;
 }
 
 void arraylist_print(ArrayList *list, void (*printfn)(void*)) {
@@ -144,18 +161,17 @@ void arraylist_print(ArrayList *list, void (*printfn)(void*)) {
   printf("]\n");
 }
 
-void arraylist_free_all(ArrayList *list) {
-  arraylist_foreach(list, _arraylist_free_func);
-  arraylist_free(list);
-}
-
-void arraylist_free(ArrayList *list) {
+// TODO: bool property good solution?
+void arraylist_free(ArrayList *list, bool items) {
+  if (items) {
+    arraylist_foreach(list, _elem_free_func);
+  }
   free(list->arr);
   list->arr = NULL;
   free(list);
 }
 
-void _arraylist_free_func(void *ele) { free(ele); }
+void _elem_free_func(void *ele) { free(ele); }
 
 void _grow_if_exceeds(ArrayList *list) {
   if (list->size >= list->cap) {
