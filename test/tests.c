@@ -9,7 +9,7 @@
 #define FUNC_ARRAY_SIZE (sizeof(func_array) / sizeof(func_pointer_t))
 
 void test_1();
-void test_linked_list();
+void test_linkedlist();
 void print(void *i);
 char *find(ArrayList *list, char *ele);
 int no_digits(size_t nu);
@@ -21,7 +21,7 @@ typedef struct {
 
 func_pointer_t func_array[] = {
     FUNC_DEF(test_1)
-    FUNC_DEF(test_linked_list)
+    FUNC_DEF(test_linkedlist)
 };
 
 int main() {
@@ -82,7 +82,7 @@ void test_1() {
   last = NULL;
 }
 
-void test_linked_list() {
+void test_linkedlist() {
   LinkedList *list = linkedlist_new();
 
   for(size_t i = 0; i < 15; i++) {

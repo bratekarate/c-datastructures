@@ -7,7 +7,7 @@ SRCDIR=src
 TESTDIR=test
 DEPS=$(SRCDIR)/dastruct.h
 OUTDIR=out
-OBJ_LIB=arraylist.o linked_list.o
+OBJ_LIB=arraylist.o linkedlist.o
 OBJ_MAIN=$(addprefix $(OUTDIR)/, $(OBJ_LIB) main.o)
 OBJ_TEST=$(addprefix $(OUTDIR)/, $(OBJ_LIB) tests.o)
 

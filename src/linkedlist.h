@@ -1,7 +1,11 @@
+#ifndef LINKEDLIST_H
+#define LINKEDLIST_H
+
 #include <stddef.h>
 #include <stdbool.h>
 
 typedef struct LinkedList LinkedList;
+
 LinkedList *linkedlist_new();
 void linkedlist_add(LinkedList *list, void *item);
 void linkedlist_add_all(LinkedList *list, LinkedList *addable);
@@ -26,3 +30,5 @@ void linkedlist_print(LinkedList *list, void (*printfn)(void*));
 void linkedlist_free(LinkedList *list, bool items);
 // TODO
 // void linkedlist_free_all(LinkedList *list);
+
+#endif

@@ -2,43 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "linkedlist.h"
 
 #define NODE_SIZE sizeof(Node)
 #define LINKED_LIST_SIZE sizeof(LinkedList)
 
 typedef struct Node Node;
-typedef struct LinkedList LinkedList;
 
-// High level functions
-LinkedList *linkedlist_new();
-void linkedlist_add(LinkedList *list, void *item);
-void linkedlist_add_all(LinkedList *list, LinkedList *addable);
-void *linkedlist_get(LinkedList *list, size_t index);
-void *linkedlist_remove(LinkedList *list, size_t index);
-size_t linkedlist_size(LinkedList *list);
-void linkedlist_free(LinkedList *list, bool items);
-
-// Low level functions
 void init_list(LinkedList **list);
 void init_node_p(Node **node, void *item);
 void add_node(LinkedList *list, Node **node, void *item);
 void print_nodes_rec_broken(Node *node);
-void linkedlist_print(LinkedList *list, void (*printfn)(void*));
 void free_nodes(Node *node, bool items);
 void free_nodes_rec_broken(Node *node);
 
-typedef struct Node {
-  void *item;
-  struct Node *prev;
-  struct Node *next;
-} Node;
-
-typedef struct LinkedList {
+struct LinkedList {
   Node *fst;
   Node *lst;
   size_t size;
-} LinkedList;
+};
 
+struct Node {
+  void *item;
+  Node *prev;
+  Node *next;
+};
 
 LinkedList *linkedlist_new() {
   LinkedList *list = malloc(LINKED_LIST_SIZE);

@@ -3,40 +3,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "arraylist.h"
 
 #define INITIAL_CAP (10)
 #define POINTER_SIZE (sizeof(void *))
-
-typedef struct ArrayList ArrayList;
-
-ArrayList *arraylist_new();
-void arraylist_add(ArrayList *list, void *elem);
-void arraylist_add_all(ArrayList *list, ArrayList *addable);
-void arraylist_add_i(ArrayList *list, intmax_t val, size_t size);
-void arraylist_add_f(ArrayList *list, double val, size_t size);
-void arraylist_insert(ArrayList *list, size_t i, void *elem);
-void *arraylist_get(ArrayList *list, size_t i);
-void *arraylist_get_last(ArrayList *list);
-void *arraylist_remove(ArrayList *list, size_t i);
-void *arraylist_remove_last(ArrayList *list);
-void *arraylist_it_first(ArrayList *list);
-void *arraylist_it_next(ArrayList *list);
-size_t arraylist_size(ArrayList *list);
-void arraylist_foreach(ArrayList *list, void (*callback)(void *item));
-ArrayList *arraylist_reverse(ArrayList *list);
-void arraylist_print(ArrayList *list, void (*printfn)(void*));
-void arraylist_free(ArrayList *list, bool items);
 
 void _elem_free_func(void *ele);
 void _grow_if_exceeds(ArrayList *list);
 void _shrink_if_small(ArrayList *list);
 
-typedef struct ArrayList {
+struct ArrayList {
   void **arr;
   size_t size;
   size_t cap;
   size_t cur;
-} ArrayList;
+};
 
 ArrayList *arraylist_new() {
   ArrayList *list = malloc(sizeof(ArrayList));

@@ -1,3 +1,6 @@
+#ifndef ARRAYLIST_H
+#define ARRAYLIST_H
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -20,3 +23,5 @@ size_t arraylist_size(ArrayList *list);
 void arraylist_foreach(ArrayList *list, void (*callback)(void*));
 void arraylist_print(ArrayList *list, void (*printfn)(void*));
 void arraylist_free(ArrayList *list, bool items);
+
+#endif
