@@ -1,8 +1,9 @@
+#include "../src/dastruct.h"
+#include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include "../src/dastruct.h"
 // TODO: duplice include in .c and .h file best practice?
 
 #define FUNC_DEF(func) {func, #func},
@@ -19,10 +20,7 @@ typedef struct {
   const char *name;
 } func_pointer_t;
 
-func_pointer_t func_array[] = {
-    FUNC_DEF(test_1)
-    FUNC_DEF(test_linkedlist)
-};
+func_pointer_t func_array[] = {FUNC_DEF(test_1) FUNC_DEF(test_linkedlist)};
 
 int main() {
   for (size_t i = 0; i < FUNC_ARRAY_SIZE; i++) {
@@ -43,7 +41,7 @@ void test_1() {
   }
 
   ArrayList *l2 = arraylist_new();
-  for(size_t i = 500; i < 500 + arraylist_size(l); i++) {
+  for (size_t i = 500; i < 500 + arraylist_size(l); i++) {
     int size = no_digits(i) + 1;
     char *elem = malloc(size * sizeof(char));
     snprintf(elem, size, "%lu", i);
@@ -61,16 +59,16 @@ void test_1() {
   strcpy(testm, test);
   arraylist_insert(l, 2, testm);
 
-  char *removed = (char*) arraylist_remove(l, 1);
+  char *removed = (char *)arraylist_remove(l, 1);
   printf("removed: %s\n", removed);
-  char *last = (char*) arraylist_remove_last(l);
+  char *last = (char *)arraylist_remove_last(l);
   printf("removed last: %s\n", last);
 
   arraylist_print(l, print);
   arraylist_reverse(l);
   arraylist_print(l, print);
-  
-  printf("cur lst: %s\n", (char*) arraylist_get_last(l));
+
+  printf("cur lst: %s\n", (char *)arraylist_get_last(l));
   printf("cur fst: %s\n", (char *)arraylist_get(l, 0));
   printf("find elem: %s\n", find(l, "test"));
 
@@ -85,18 +83,44 @@ void test_1() {
 void test_linkedlist() {
   LinkedList *list = linkedlist_new();
 
-  for(size_t i = 0; i < 15; i++) {
+  errno = 0;
+  linkedlist_remove(list, 0);
+  if (errno != 1) {
+    fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+    return;
+  }
+
+  errno = 0;
+  linkedlist_get(list, 0);
+  if (errno != 1) {
+    fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+    return;
+  }
+
+  for (size_t i = 0; i < 15; i++) {
     int size = no_digits(i) + 1;
     char *elem = malloc(size * sizeof(char));
     snprintf(elem, size, "%zu", i);
     linkedlist_add(list, elem);
   }
 
+  errno = 0;
+  linkedlist_remove(list, 20);
+  if (errno != 1) {
+    fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+  }
+
+  errno = 0;
+  linkedlist_get(list, 20);
+  if (errno != 1) {
+    fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+  }
+
   linkedlist_print(list, print);
 
   LinkedList *list2 = linkedlist_new();
 
-  for(size_t i = 500; i < 500 + linkedlist_size(list); i++) {
+  for (size_t i = 500; i < 500 + linkedlist_size(list); i++) {
     int size = no_digits(i) + 1;
     // fprintf(stderr, "%lu\t%d\n", i, n_digits);
     char *elem = malloc(size * sizeof(char));
@@ -109,20 +133,26 @@ void test_linkedlist() {
   linkedlist_add_all(list, list2);
 
   linkedlist_print(list, print);
-  printf("list[%d] = %d\nremove %d.\n", 1, 1, *(int*)linkedlist_remove(list, 1));
+  printf("list[%d] = %d\nremove %d.\n", 1, 1,
+         *(int *)linkedlist_remove(list, 1));
   linkedlist_print(list, print);
-  printf("list[%d] = %d\n", 1, *(int*)linkedlist_get(list, 1));
-  printf("list[0] = %d\nremove 0.\n", *(int*)linkedlist_remove(list, 0));
+  printf("list[%d] = %d\n", 1, *(int *)linkedlist_get(list, 1));
+  printf("list[0] = %d\nremove 0.\n", *(int *)linkedlist_remove(list, 0));
   linkedlist_print(list, print);
-  printf("list[0] = %d\n", *(int*)linkedlist_get(list, 0));
+  printf("list[0] = %d\n", *(int *)linkedlist_get(list, 0));
+
+  LinkedListIterator *it = linkedlist_iterator(list);
+
+  char *next;
+  while ((next = linkedlist_it_next(it)) != NULL) {
+    printf("ITERATING: %s, %zu\n", next, linkedlist_it_i(it) - 1);
+  }
 
   linkedlist_free(list, true);
   list = NULL;
 }
 
-void free_func(void *ele) {
-    free(ele);
-}
+void free_func(void *ele) { free(ele); }
 
 char *find(ArrayList *list, char *ele) {
   ArrayListIterator *it = arraylist_iterator(list);

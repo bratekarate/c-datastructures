@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 typedef struct LinkedList LinkedList;
+typedef struct LinkedListIterator LinkedListIterator;
 
 LinkedList *linkedlist_new();
 void linkedlist_add(LinkedList *list, void *item);
@@ -19,16 +20,13 @@ void *linkedlist_remove(LinkedList *list, const size_t index);
 // void *linkedlist_remove_last(LinkedList *list);
 //TODO
 // LinkedList *linkedlist_reverse(LinkedList *list);
-//TODO
-// void *linkelist_it_next(LinkedList *list);
-//TODO
-// void *linkedlist_it_first(LinkedList *list);
+LinkedListIterator *linkedlist_iterator(LinkedList *list);
+void *linkedlist_it_next(LinkedListIterator *iterator);
+size_t linkedlist_it_i(LinkedListIterator *iterator);
 size_t linkedlist_size(LinkedList *list);
 //TODO
 // void for_each(LinkedList *list, void (*callback)(void*));
 void linkedlist_print(LinkedList *list, void (*printfn)(void*));
 void linkedlist_free(LinkedList *list, bool items);
-// TODO
-// void linkedlist_free_all(LinkedList *list);
 
 #endif
