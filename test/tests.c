@@ -125,13 +125,13 @@ void free_func(void *ele) {
 }
 
 char *find(ArrayList *list, char *ele) {
-  char *next = arraylist_it_first(list);
-  do {
+  ArrayListIterator *it = arraylist_iterator(list);
+  char *next;
+  while ((next = arraylist_it_next(it)) != NULL) {
     if (!strcmp(next, ele)) {
       return next;
     }
-  } while ((next = arraylist_it_next(list)) != NULL);
-
+  }
   return NULL;
 }
 
