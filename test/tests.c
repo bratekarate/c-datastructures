@@ -97,6 +97,33 @@ void test_linkedlist() {
     return;
   }
 
+  errno = 1;
+  linkedlist_get_last(list);
+  if (errno != 1) {
+    fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+    return;
+  }
+
+  errno = 0;
+  linkedlist_insert(list, 1, strdup("test2"));
+  if (errno != 1) {
+    fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+    return;
+  }
+
+  linkedlist_insert(list, 0, strdup("test2"));
+  linkedlist_print(list, print);
+  linkedlist_insert(list, 1, strdup("test5"));
+  linkedlist_print(list, print);
+  linkedlist_insert(list, 1, strdup("test3"));
+  linkedlist_print(list, print);
+  linkedlist_insert(list, 2, strdup("test4"));
+  linkedlist_insert(list, 4, strdup("test6"));
+  linkedlist_insert(list, 0, strdup("test1"));
+  linkedlist_print(list, print);
+
+  printf("last: %s\n", (char *)linkedlist_get_last(list));
+
   for (size_t i = 0; i < 15; i++) {
     int size = no_digits(i) + 1;
     char *elem = malloc(size * sizeof(char));
@@ -148,6 +175,7 @@ void test_linkedlist() {
     printf("ITERATING: %s, %zu\n", next, linkedlist_it_i(it) - 1);
   }
 
+  linkedlist_print(list, print);
   linkedlist_free(list, true);
   list = NULL;
 }

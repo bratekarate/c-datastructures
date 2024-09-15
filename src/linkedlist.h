@@ -10,11 +10,9 @@ typedef struct LinkedListIterator LinkedListIterator;
 LinkedList *linkedlist_new();
 void linkedlist_add(LinkedList *list, void *item);
 void linkedlist_add_all(LinkedList *list, LinkedList *addable);
-//TODO
-//void linkedlist_insert(LinkedList *list, size_t i, void *elem);
+void linkedlist_insert(LinkedList *list, size_t i, void *elem);
 void *linkedlist_get(LinkedList *list, const size_t index);
-//TODO
-//void *linkedlist_get_last(LinkedList *list);
+void *linkedlist_get_last(LinkedList *list);
 void *linkedlist_remove(LinkedList *list, const size_t index);
 //TODO
 // void *linkedlist_remove_last(LinkedList *list);

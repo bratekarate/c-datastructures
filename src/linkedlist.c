@@ -82,6 +82,15 @@ void *linkedlist_get(LinkedList *list, size_t index) {
   return cur->item;
 }
 
+void *linkedlist_get_last(LinkedList *list) {
+  if (list->lst == NULL) {
+    errno = 1;
+    return NULL;
+  }
+
+  return list->lst->item;
+}
+
 void *linkedlist_remove(LinkedList *list, size_t index) {
   Node *cur = list->fst;
 
@@ -95,7 +104,7 @@ void *linkedlist_remove(LinkedList *list, size_t index) {
       cur = cur->next;
     }
   }
-  printf ("index: %zu\n", index);
+  printf("index: %zu\n", index);
 
   Node *prev = cur->prev;
   Node *next = cur->next;
@@ -163,6 +172,34 @@ void linkedlist_print(LinkedList *list, void (*printfn)(void *)) {
     node = node->next;
   }
   printf("]\n");
+}
+
+void linkedlist_insert(LinkedList *list, size_t pos, void *item) {
+  if (pos > list->size) {
+    errno = 1;
+    return;
+  }
+
+  if (pos == list->size) {
+    linkedlist_add(list, item);
+    return;
+  }
+
+  // TODO: If pos > list->size/2, go backwards from list end.
+  Node *node = list->fst;
+  for (size_t i = 0; i < pos && node != NULL; i++) {
+    node = node->next;
+  }
+
+  Node *new = malloc(NODE_SIZE);
+  *new = (Node){.item = item, .next = node, .prev = node->prev};
+  if (node->prev) {
+    node->prev->next = new;
+  } else {
+    list->fst = new;
+  }
+  node->prev = new;
+  list->size++;
 }
 
 void linkedlist_add(LinkedList *list, void *item) {
