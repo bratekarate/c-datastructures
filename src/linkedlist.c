@@ -65,21 +65,21 @@ void *linkedlist_it_next(LinkedListIterator *iterator) {
 
 size_t linkedlist_it_i(LinkedListIterator *iterator) { return iterator->i; }
 
-void *linkedlist_get(LinkedList *list, size_t index) {
-  if (index >= list->size) {
+void *linkedlist_get(LinkedList *list, size_t idx) {
+  if (idx >= list->size) {
     errno = 1;
     return NULL;
   }
 
   Node *cur;
-  if (index < list->size/2) {
+  if (idx < list->size / 2) {
     cur = list->fst;
-    for (size_t i = 0; i < index; i++) {
+    for (size_t i = 0; i < idx; i++) {
       cur = cur->next;
     }
   } else {
     cur = list->lst;
-    for (size_t i = list->size - 1; i > index; i--) {
+    for (size_t i = list->size - 1; i > idx; i--) {
       cur = cur->prev;
     }
   }
@@ -95,16 +95,24 @@ void *linkedlist_get_last(LinkedList *list) {
   return list->lst->item;
 }
 
-void *linkedlist_remove(LinkedList *list, size_t index) {
-  if (index >= list->size) {
+void *linkedlist_remove(LinkedList *list, size_t idx) {
+  if (idx >= list->size) {
     errno = 1;
     return NULL;
   }
 
-  Node *cur = list->fst;
-  for (size_t i = 0; i < index; i++) {
-    if (i < index) {
+  // TODO: any way to centralize this duplicate logic from get, remove and
+  // insert?
+  Node *cur;
+  if (idx < list->size) {
+    cur = list->fst;
+    for (size_t i = 0; i < idx; i++) {
       cur = cur->next;
+    }
+  } else {
+    cur = list->lst;
+    for (size_t i = list->size - 1; i > idx; i--) {
+      cur = cur->prev;
     }
   }
 
@@ -176,13 +184,13 @@ void linkedlist_print(LinkedList *list, void (*printfn)(void *)) {
   printf("]\n");
 }
 
-void linkedlist_insert(LinkedList *list, size_t pos, void *item) {
-  if (pos > list->size) {
+void linkedlist_insert(LinkedList *list, size_t idx, void *item) {
+  if (idx > list->size) {
     errno = 1;
     return;
   }
 
-  if (pos == list->size) {
+  if (idx == list->size) {
     Node *node = malloc(NODE_SIZE);
     *node = (Node){.item = item, .next = NULL, .prev = NULL};
 
@@ -200,14 +208,14 @@ void linkedlist_insert(LinkedList *list, size_t pos, void *item) {
   }
 
   Node *node;
-  if (pos < list->size/2) {
+  if (idx < list->size / 2) {
     node = list->fst;
-    for (size_t i = 0; i < pos && node != NULL; i++) {
+    for (size_t i = 0; i < idx && node != NULL; i++) {
       node = node->next;
     }
   } else {
     node = list->lst;
-    for (size_t i = list->size - 1; i > pos && node != NULL; i--) {
+    for (size_t i = list->size - 1; i > idx && node != NULL; i--) {
       node = node->prev;
     }
   }
