@@ -132,15 +132,17 @@ void test_linkedlist() {
   }
 
   errno = 0;
-  linkedlist_remove(list, 20);
+  linkedlist_remove(list, linkedlist_size(list));
   if (errno != 1) {
     fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+    return;
   }
 
   errno = 0;
-  linkedlist_get(list, 20);
+  linkedlist_get(list, linkedlist_size(list));
   if (errno != 1) {
     fprintf(stderr, "errno is not set to 1, but index was out of bounds.\n");
+    return;
   }
 
   linkedlist_print(list, print);

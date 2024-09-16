@@ -66,17 +66,21 @@ void *linkedlist_it_next(LinkedListIterator *iterator) {
 size_t linkedlist_it_i(LinkedListIterator *iterator) { return iterator->i; }
 
 void *linkedlist_get(LinkedList *list, size_t index) {
-  // TODO: if index is past middle, go backwards
-  Node *cur = list->fst;
+  if (index >= list->size) {
+    errno = 1;
+    return NULL;
+  }
 
-  for (size_t i = 0; i <= index; i++) {
-    if (cur == NULL) {
-      errno = 1;
-      return NULL;
-    }
-
-    if (i < index) {
+  Node *cur;
+  if (index < list->size/2) {
+    cur = list->fst;
+    for (size_t i = 0; i < index; i++) {
       cur = cur->next;
+    }
+  } else {
+    cur = list->lst;
+    for (size_t i = list->size - 1; i > index; i--) {
+      cur = cur->prev;
     }
   }
   return cur->item;
@@ -92,19 +96,17 @@ void *linkedlist_get_last(LinkedList *list) {
 }
 
 void *linkedlist_remove(LinkedList *list, size_t index) {
+  if (index >= list->size) {
+    errno = 1;
+    return NULL;
+  }
+
   Node *cur = list->fst;
-
-  for (size_t i = 0; i <= index; i++) {
-    if (cur == NULL) {
-      errno = 1;
-      return NULL;
-    }
-
+  for (size_t i = 0; i < index; i++) {
     if (i < index) {
       cur = cur->next;
     }
   }
-  printf("index: %zu\n", index);
 
   Node *prev = cur->prev;
   Node *next = cur->next;
