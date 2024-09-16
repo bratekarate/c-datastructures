@@ -181,14 +181,33 @@ void linkedlist_insert(LinkedList *list, size_t pos, void *item) {
   }
 
   if (pos == list->size) {
-    linkedlist_add(list, item);
+    Node *node = malloc(NODE_SIZE);
+    *node = (Node){.item = item, .next = NULL, .prev = NULL};
+
+    Node *l = list->lst;
+    list->lst = node;
+
+    if (l == NULL) {
+      list->fst = node;
+    } else {
+      l->next = node;
+      node->prev = l;
+    }
+    list->size++;
     return;
   }
 
-  // TODO: If pos > list->size/2, go backwards from list end.
-  Node *node = list->fst;
-  for (size_t i = 0; i < pos && node != NULL; i++) {
-    node = node->next;
+  Node *node;
+  if (pos < list->size/2) {
+    node = list->fst;
+    for (size_t i = 0; i < pos && node != NULL; i++) {
+      node = node->next;
+    }
+  } else {
+    node = list->lst;
+    for (size_t i = list->size - 1; i > pos && node != NULL; i--) {
+      node = node->prev;
+    }
   }
 
   Node *new = malloc(NODE_SIZE);
@@ -203,17 +222,5 @@ void linkedlist_insert(LinkedList *list, size_t pos, void *item) {
 }
 
 void linkedlist_add(LinkedList *list, void *item) {
-  Node *node = malloc(NODE_SIZE);
-  *node = (Node){.item = item, .next = NULL, .prev = NULL};
-
-  Node *l = list->lst;
-  list->lst = node;
-
-  if (l == NULL) {
-    list->fst = node;
-  } else {
-    l->next = node;
-    node->prev = l;
-  }
-  list->size++;
+  linkedlist_insert(list, 0, item);
 }

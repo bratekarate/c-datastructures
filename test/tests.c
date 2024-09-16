@@ -158,6 +158,11 @@ void test_linkedlist() {
   linkedlist_print(list2, print);
 
   linkedlist_add_all(list, list2);
+  size_t idx = linkedlist_size(list) - 2;
+  linkedlist_insert(list, idx, strdup("hello"));
+  printf("at %zu: %s\n", idx, (char*)linkedlist_get(list, idx));
+
+  printf("size: %zu\n", linkedlist_size(list));
 
   linkedlist_print(list, print);
   printf("list[%d] = %d\nremove %d.\n", 1, 1,
