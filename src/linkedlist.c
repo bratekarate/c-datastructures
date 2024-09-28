@@ -71,7 +71,7 @@ void *linkedlist_get(LinkedList *list, size_t idx) {
     return NULL;
   }
 
-  Node *cur;
+  Node *cur = NULL;
   if (idx < list->size / 2) {
     cur = list->fst;
     for (size_t i = 0; i < idx; i++) {
@@ -103,7 +103,7 @@ void *linkedlist_remove(LinkedList *list, size_t idx) {
 
   // TODO: any way to centralize this duplicate logic from get, remove and
   // insert?
-  Node *cur;
+  Node *cur = NULL;
   if (idx < list->size) {
     cur = list->fst;
     for (size_t i = 0; i < idx; i++) {
@@ -207,7 +207,7 @@ void linkedlist_insert(LinkedList *list, size_t idx, void *item) {
     return;
   }
 
-  Node *node;
+  Node *node = NULL;
   if (idx < list->size / 2) {
     node = list->fst;
     for (size_t i = 0; i < idx && node != NULL; i++) {

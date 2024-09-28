@@ -1,4 +1,5 @@
 #include "arraylist.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -6,6 +7,9 @@
 
 #define INITIAL_CAP (10)
 #define POINTER_SIZE (sizeof(void *))
+#define ARRAY_LIST_ALIGNED (32)
+#define ARRAY_LIST_ITERATOR_ALIGNED (16)
+#define ARRAY_LIST_GROW_FACTOR (1.5)
 
 void elem_free_func(void *ele);
 void grow_if_exceeds(ArrayList *list);
@@ -15,12 +19,12 @@ struct ArrayList {
   void **arr;
   size_t size;
   size_t cap;
-};
+} __attribute__((aligned(ARRAY_LIST_ALIGNED)));
 
 struct ArrayListIterator {
   ArrayList *list;
   size_t i;
-};
+} __attribute__((aligned(ARRAY_LIST_ITERATOR_ALIGNED)));
 
 ArrayList *arraylist_new() {
   ArrayList *list = malloc(sizeof(ArrayList));
@@ -34,9 +38,9 @@ void arraylist_add(ArrayList *list, void *elem) {
 }
 
 void arraylist_add_all(ArrayList *list, ArrayList *addable) {
-  ArrayListIterator *it = arraylist_iterator(addable);
-  void *next;
-  while ((next = arraylist_it_next(it)) != NULL) {
+  ArrayListIterator *iter = arraylist_iterator(addable);
+  void *next = NULL;
+  while ((next = arraylist_it_next(iter)) != NULL) {
     arraylist_add(list, next);
   }
 }
@@ -65,12 +69,12 @@ void arraylist_insert(ArrayList *list, size_t index, void *elem) {
   list->size++;
 }
 
-void *arraylist_get(ArrayList *list, size_t i) {
-  if (i >= list->size) {
+void *arraylist_get(ArrayList *list, size_t idx) {
+  if (idx >= list->size) {
     return NULL;
   }
 
-  return list->arr[i];
+  return list->arr[idx];
 }
 
 void *arraylist_get_last(ArrayList *list) {
@@ -103,20 +107,20 @@ ArrayListIterator *arraylist_iterator(ArrayList *list) {
     return NULL;
   }
 
-  ArrayListIterator *it = malloc(sizeof(ArrayListIterator));
-  *it = (ArrayListIterator){.i = 0, .list = list};
+  ArrayListIterator *iter = malloc(sizeof(ArrayListIterator));
+  *iter = (ArrayListIterator){.i = 0, .list = list};
 
-  return it;
+  return iter;
 }
 
-size_t arraylist_it_i(ArrayListIterator *it) { return it->i; }
+size_t arraylist_it_i(ArrayListIterator *iter) { return iter->i; }
 
-void *arraylist_it_next(ArrayListIterator *it) {
-  if (it->i >= it->list->size) {
+void *arraylist_it_next(ArrayListIterator *iter) {
+  if (iter->i >= iter->list->size) {
     return NULL;
   }
 
-  return it->list->arr[it->i++];
+  return iter->list->arr[iter->i++];
 }
 
 size_t arraylist_size(ArrayList *list) { return list->size; }
@@ -128,8 +132,7 @@ void arraylist_foreach(ArrayList *list, void (*callback)(void *item)) {
 }
 
 ArrayList *arraylist_reverse(ArrayList *list) {
-  int l, r;
-  for (l = 0, r = list->size - 1; l < r; l++, r--) {
+  for (size_t l = 0, r = list->size - 1; l < r; l++, r--) {
     void *tmp = list->arr[l];
     list->arr[l] = list->arr[r];
     list->arr[r] = tmp;
@@ -139,10 +142,10 @@ ArrayList *arraylist_reverse(ArrayList *list) {
 
 void arraylist_print(ArrayList *list, void (*printfn)(void *)) {
   printf("[ ");
-  ArrayListIterator *it = arraylist_iterator(list);
-  void *next;
-  while ((next = arraylist_it_next(it)) != NULL) {
-    if (arraylist_it_i(it) != 1) {
+  ArrayListIterator *iter = arraylist_iterator(list);
+  void *next = NULL;
+  while ((next = arraylist_it_next(iter)) != NULL) {
+    if (arraylist_it_i(iter) != 1) {
       printf(", ");
     }
     printfn(next);
@@ -163,14 +166,16 @@ void elem_free_func(void *ele) { free(ele); }
 
 void grow_if_exceeds(ArrayList *list) {
   if (list->size >= list->cap) {
-    list->cap *= 1.5;
+    list->cap = (size_t)((double)list->cap * ARRAY_LIST_GROW_FACTOR);
+    /* TODO: bugprone-suspicious-realloc-usage */
     list->arr = realloc(list->arr, list->cap * POINTER_SIZE);
   }
 }
 
 void shrink_if_small(ArrayList *list) {
   if (list->size * 2 < list->cap) {
-    list->cap = list->size * 1.5;
+    list->cap = (size_t)((double)list->size * ARRAY_LIST_GROW_FACTOR);
+    /* TODO: bugprone-suspicious-realloc-usage */
     list->arr = realloc(list->arr, list->cap * POINTER_SIZE);
   }
 }

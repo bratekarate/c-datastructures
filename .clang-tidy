@@ -1,0 +1,12 @@
+Checks: >
+    *,
+    -llvmlibc-implementation-in-namespace,
+    -llvmlibc-restrict-system-libc-headers,
+    -google-objc-function-naming,
+    -modernize-*,
+    -hicpp-*,
+    -cppcoreguidelines-*,
+    -google-readability-todo,
+    -altera-*,
+    -readability-identifier-length,
+    -bugprone-easily-swappable-parameters,

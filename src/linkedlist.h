@@ -1,8 +1,8 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct LinkedList LinkedList;
 typedef struct LinkedListIterator LinkedListIterator;
@@ -10,10 +10,10 @@ typedef struct LinkedListIterator LinkedListIterator;
 LinkedList *linkedlist_new();
 void linkedlist_add(LinkedList *list, void *item);
 void linkedlist_add_all(LinkedList *list, LinkedList *addable);
-void linkedlist_insert(LinkedList *list, size_t i, void *elem);
-void *linkedlist_get(LinkedList *list, const size_t index);
+void linkedlist_insert(LinkedList *list, size_t idx, void *item);
+void *linkedlist_get(LinkedList *list,  size_t idx);
 void *linkedlist_get_last(LinkedList *list);
-void *linkedlist_remove(LinkedList *list, const size_t index);
+void *linkedlist_remove(LinkedList *list, size_t idx);
 //TODO
 // void *linkedlist_remove_last(LinkedList *list);
 //TODO

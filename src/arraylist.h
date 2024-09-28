@@ -1,9 +1,9 @@
 #ifndef ARRAYLIST_H
 #define ARRAYLIST_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 typedef struct ArrayList ArrayList;
 typedef struct ArrayListIterator ArrayListIterator;

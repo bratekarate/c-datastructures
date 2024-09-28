@@ -20,7 +20,7 @@ typedef struct {
   const char *name;
 } func_pointer_t;
 
-func_pointer_t func_array[] = {FUNC_DEF(test_1) FUNC_DEF(test_linkedlist)};
+const func_pointer_t func_array[] = {FUNC_DEF(test_1) FUNC_DEF(test_linkedlist)};
 
 int main() {
   for (size_t i = 0; i < FUNC_ARRAY_SIZE; i++) {
@@ -33,6 +33,7 @@ int main() {
 void test_1() {
   ArrayList *l = arraylist_new();
 
+  /* NOLINTNEXTLINE(readability-magic-numbers) */
   for (size_t i = 0; i < 9; i++) {
     int size = no_digits(i) + 1;
     char *elem = malloc(size * sizeof(char));
@@ -41,6 +42,7 @@ void test_1() {
   }
 
   ArrayList *l2 = arraylist_new();
+  /* NOLINTNEXTLINE(readability-magic-numbers) */
   for (size_t i = 500; i < 500 + arraylist_size(l); i++) {
     int size = no_digits(i) + 1;
     char *elem = malloc(size * sizeof(char));
@@ -124,6 +126,7 @@ void test_linkedlist() {
 
   printf("last: %s\n", (char *)linkedlist_get_last(list));
 
+  /* NOLINTNEXTLINE(readability-magic-numbers) */
   for (size_t i = 0; i < 15; i++) {
     int size = no_digits(i) + 1;
     char *elem = malloc(size * sizeof(char));
@@ -149,6 +152,7 @@ void test_linkedlist() {
 
   LinkedList *list2 = linkedlist_new();
 
+  /* NOLINTNEXTLINE(readability-magic-numbers) */
   for (size_t i = 500; i < 500 + linkedlist_size(list); i++) {
     int size = no_digits(i) + 1;
     // fprintf(stderr, "%lu\t%d\n", i, n_digits);
@@ -209,6 +213,7 @@ int no_digits(size_t nu) {
 
   int c;
   for (c = 0; nu != 0; c++) {
+    /* NOLINTNEXTLINE(readability-magic-numbers) */
     nu /= 10;
   }
   return c;
