@@ -1,11 +1,11 @@
-CC=gcc
+CC=tcc
 CFLAGS=-I. -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
-FLAGS=-g -pedantic -Wall -Wextra
+FLAGS=-pedantic -Wall -Wextra
 CLIBS=-lglib-2.0
 NAME=data_structures
 SRCDIR=src
 TESTDIR=test
-DEPS=$(SRCDIR)/dastruct.h
+DEPS=$(SRCDIR)/linkedlist.h $(SRCDIR)/arraylist.h $(SRCDIR)/hashtable.h
 OUTDIR=out
 OBJ_LIB=arraylist.o linkedlist.o
 OBJ_MAIN=$(addprefix $(OUTDIR)/, $(OBJ_LIB) main.o)

@@ -71,7 +71,7 @@ void floats_malloc() {
 
   /* NOLINTNEXTLINE(readability-magic-numbers) */
   for (size_t i = 0; i < 100; i++) {
-    double *elem = malloc(sizeof(size_t));
+    double *elem = malloc(sizeof(double));
     /* NOLINTNEXTLINE(readability-magic-numbers) */
     *elem = 100.0 * (double)i / 100 - 0.5;
     arraylist_add(arr, elem);
@@ -101,8 +101,10 @@ void strings_malloc() {
     char *fmt = "Hello %zu!";
     size_t len = strlen(fmt) - 3 + 1 + no_digits(i);
     char *elem = malloc(len * sizeof(char));
-    snprintf(elem, len, fmt, i);
-
+    /* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling) */
+    int r = snprintf(elem, len, fmt, i);
+    
+    assert(r >= 0);
     assert(len - 1 == strlen(elem));
 
     arraylist_add(arr, elem);

@@ -1,3 +1,6 @@
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
 typedef struct HashTable HashTable;
 
 HashTable *hashtable_new();
@@ -9,3 +12,5 @@ void *hashtable_print(HashTable *hashtable, void *key);
 void *hashtable_free(HashTable *hashtable, void *key);
 // void **hashtable_keys(HashTable *hashtable, void *key);
 // void **hashtable_values(HashTable *hashtable, void *key);
+
+#endif

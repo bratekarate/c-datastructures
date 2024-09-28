@@ -1,10 +1,10 @@
-#include "../src/dastruct.h"
+#include "../src/linkedlist.h"
+#include "../src/arraylist.h"
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// TODO: duplice include in .c and .h file best practice?
 
 #define FUNC_DEF(func) {func, #func},
 #define FUNC_ARRAY_SIZE (sizeof(func_array) / sizeof(func_pointer_t))
@@ -21,6 +21,8 @@ typedef struct {
 } func_pointer_t;
 
 const func_pointer_t func_array[] = {FUNC_DEF(test_1) FUNC_DEF(test_linkedlist)};
+
+/* NOLINTBEGIN(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling) */
 
 int main() {
   for (size_t i = 0; i < FUNC_ARRAY_SIZE; i++) {
@@ -218,3 +220,5 @@ int no_digits(size_t nu) {
   }
   return c;
 }
+
+/* NOLINTEND(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling) */

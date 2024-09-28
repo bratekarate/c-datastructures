@@ -220,6 +220,11 @@ void linkedlist_insert(LinkedList *list, size_t idx, void *item) {
     }
   }
 
+  if (node == NULL) {
+    errno = 2;
+    return;
+  }
+
   Node *new = malloc(NODE_SIZE);
   *new = (Node){.item = item, .next = node, .prev = node->prev};
   if (node->prev) {
